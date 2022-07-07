@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,11 +13,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   WebViewController? _controller;
 
-  final Completer<WebViewController> _controllerCompleter =
-  Completer<WebViewController>();
+  final Completer<WebViewController> _controllerCompleter = Completer<WebViewController>();
 
   @override
   void initState() {
@@ -30,7 +29,6 @@ class _HomeScreenState extends State<HomeScreen> {
       child: Scaffold(
         body: WillPopScope(
           onWillPop: () => _goBack(context),
-
           child: WebView(
             initialUrl: 'http://molk-kw.com/',
             javascriptMode: JavascriptMode.unrestricted,
@@ -46,29 +44,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<bool> _goBack(BuildContext context) async {
-    if (_controller!=null&& await _controller!.canGoBack()) {
+    if (_controller != null && await _controller!.canGoBack()) {
       _controller!.goBack();
       return Future.value(false);
     } else {
-      // showDialog(
-      //     context: context,
-      //     builder: (context) => AlertDialog(
-      //       title: Text('Do you want to exit'),
-      //       actions: <Widget>[
-      //         FlatButton(
-      //           onPressed: () {
-      //             Navigator.of(context).pop();
-      //           },
-      //           child: Text('No'),
-      //         ),
-      //         FlatButton(
-      //           onPressed: () {
-      //             SystemNavigator.pop();
-      //           },
-      //           child: Text('Yes'),
-      //         ),
-      //       ],
-      //     ));
+      showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: const Text('Do you want to exit'),
+          actions: <Widget>[
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('No'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                SystemNavigator.pop();
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        ),
+      );
       return Future.value(true);
     }
   }
